@@ -19,4 +19,7 @@ $compatible->dependencies['required']->package['pear2.php.net/PEAR2_Exception']-
 $compatible->dependencies['required']->package['pear2.php.net/PEAR2_MultiErrors']->save();
 $compatible->dependencies['required']->package['pear2.php.net/PEAR2_HTTP_Request']->save();
 */
-?>
+
+$package->dependencies['required']->package['pear.php.net/HTTP_Request2-2.0.0RC1']->save();
+$compatible->dependencies['required']->package['pear.php.net/HTTP_Request2-2.0.0RC1']->save();
+

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Erebot_Module_TV" description="" default="all">
+<project name="Erebot_Module_WebGetter" description="" default="all">
     <property name="qa.coverage.force" value="false"/>
     <property name="tagfiles" value="Erebot"/>
 
