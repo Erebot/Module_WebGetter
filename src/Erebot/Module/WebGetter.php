@@ -47,9 +47,11 @@ extends Erebot_Module_Base
 
                 $trigger    = trim($this->parseString($index.'.trigger'));
                 $token = $registry->registerTriggers($trigger, $matchAny);
-                if ($token === NULL)
-                    throw new Exception($this->_translator->gettext(
+                if ($token === NULL) {
+                    $translator = $this->getTranslator(FALSE);
+                    throw new Exception($translator->gettext(
                         'Could not register trigger #'.$index.' for "'.$trigger.'"'));
+                }
 
                 $filter->add(new Erebot_Event_Match_TextWildcard($trigger.' *', FALSE));
                 $this->_indexes[$trigger] = $index;
