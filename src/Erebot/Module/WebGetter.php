@@ -204,8 +204,8 @@ Returns TV schedules for the given channels at the given time.
                 'follow_redirects'  => TRUE,
                 'ssl_verify_peer'   => FALSE,
                 'ssl_verify_host'   => FALSE,
-                'timeout'           => 8,
-                'connect_timeout'   => 3,
+                'timeout'           => $this->parseInteger('timeout', 8),
+                'connect_timeout'   => $this->parseInteger('conn_timeout', 3),
             )
         );
         $request->setCookieJar(TRUE);
@@ -241,7 +241,19 @@ Returns TV schedules for the given channels at the given time.
             'application/xhtml+xml',
         );
         $logger->debug($translator->gettext('Retrieving "%s"'), (string) $url);
-        $response   = $request->send();
+        try {
+            $response   = $request->send();
+        }
+        catch (HTTP_Request2_Exception $e) {
+            $translator = $this->getTranslator($chan);
+            $msg = $this->gettext(
+                'An error occurred while retrieving '.
+                'the information (<var name="error"/>)'
+            );
+            $tpl = new Erebot_Styling($msg, $translator);
+            $tpl->assign('error', $e->getMessage());
+            return $this->sendMessage($target, $tpl->render());
+        }
         $mimeType   = $response->getHeader('content-type');
         $mimeType   = substr($mimeType, 0, strcspn($mimeType, ';'));
         if (!in_array($mimeType, $mimes))
