@@ -204,8 +204,8 @@ Returns TV schedules for the given channels at the given time.
                 'follow_redirects'  => TRUE,
                 'ssl_verify_peer'   => FALSE,
                 'ssl_verify_host'   => FALSE,
-                'timeout'           => $this->parseInteger('timeout', 8),
-                'connect_timeout'   => $this->parseInteger('conn_timeout', 3),
+                'timeout'           => $this->parseInt('timeout', 8),
+                'connect_timeout'   => $this->parseInt('conn_timeout', 3),
             )
         );
         $request->setCookieJar(TRUE);
