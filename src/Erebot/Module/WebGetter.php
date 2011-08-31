@@ -40,20 +40,30 @@ extends Erebot_Module_Base
             $this->_indexes = array();
             for ($index = 1; in_array($index.'.trigger', $params); $index++) {
                 if (!in_array($index.'.url', $params))
-                    throw new Erebot_InvalidValueException('Missing URL #'.$index);
+                    throw new Erebot_InvalidValueException(
+                        'Missing URL #'.$index
+                    );
 
                 if (!in_array($index.'.format', $params))
-                    throw new Erebot_InvalidValueException('Missing format #'.$index);
+                    throw new Erebot_InvalidValueException(
+                        'Missing format #'.$index
+                    );
 
                 $trigger    = trim($this->parseString($index.'.trigger'));
                 $token = $registry->registerTriggers($trigger, $matchAny);
                 if ($token === NULL) {
                     $translator = $this->getTranslator(FALSE);
-                    throw new Exception($translator->gettext(
-                        'Could not register trigger #'.$index.' for "'.$trigger.'"'));
+                    throw new Exception(
+                        $translator->gettext(
+                            'Could not register trigger #'.$index.
+                            ' for "'.$trigger.'"'
+                        )
+                    );
                 }
 
-                $filter->add(new Erebot_Event_Match_TextWildcard($trigger.' *', FALSE));
+                $filter->add(
+                    new Erebot_Event_Match_TextWildcard($trigger.' *', FALSE)
+                );
                 $this->_indexes[$trigger] = $index;
             }
 
@@ -75,7 +85,10 @@ extends Erebot_Module_Base
     {
     }
 
-    public function getHelp(Erebot_Interface_Event_Base_TextMessage $event, $words)
+    public function getHelp(
+        Erebot_Interface_Event_Base_TextMessage $event,
+                                                $words
+    )
     {
         if ($event instanceof Erebot_Interface_Event_Base_Private) {
             $target = $event->getSource();
@@ -92,10 +105,10 @@ extends Erebot_Module_Base
         $nbArgs     = count($words);
 
         if ($nbArgs == 1 && $words[0] == $moduleName) {
-            $msg = $translator->gettext('
-Provides the <b><var name="trigger"/></b> command which retrieves
-information about TV schedules off the internet.
-');
+            $msg = $translator->gettext(
+                'Provides the <b><var name="trigger"/></b> command which '.
+                'retrieves information about TV schedules off the internet.'
+            );
             $formatter = new Erebot_Styling($msg, $translator);
             $formatter->assign('trigger', $trigger);
             $this->sendMessage($target, $formatter->render());
@@ -106,21 +119,24 @@ information about TV schedules off the internet.
             return FALSE;
 
         if ($words[1] == $trigger) {
-            $msg = $translator->gettext("
-<b>Usage:</b> !<var name='trigger'/> [<u>time</u>] [<u>channels</u>].
-Returns TV schedules for the given channels at the given time.
-[<u>time</u>] can be expressed using either 12h or 24h notation.
-[<u>channels</u>] can be a single channel name, a list of channels
-(separated by commas) or one of the pre-defined groups of channels.
-");
+            $msg = $translator->gettext(
+                "<b>Usage:</b> !<var name='trigger'/> [<u>time</u>] ".
+                "[<u>channels</u>]. Returns TV schedules for the given ".
+                "channels at the given time. [<u>time</u>] can be expressed ".
+                "using either 12h or 24h notation. [<u>channels</u>] can be ".
+                "a single channel name, a list of channels (separated by ".
+                "commas) or one of the pre-defined groups of channels."
+            );
             $formatter = new Erebot_Styling($msg, $translator);
             $formatter->assign('trigger', $trigger);
             $this->sendMessage($target, $formatter->render());
 
-            $msg = $translator->gettext("If none is given, the default group ".
-                    "(<b><var name='default'/></b>) is used. The following ".
-                    "groups are available: <for from='groups' key='group' ".
-                    "item='dummy'><b><var name='group'/></b></for>.");
+            $msg = $translator->gettext(
+                "If none is given, the default group (<b><var ".
+                "name='default'/></b>) is used. The following ".
+                "groups are available: <for from='groups' key='group' ".
+                "item='dummy'><b><var name='group'/></b></for>."
+            );
             $formatter = new Erebot_Styling($msg, $translator);
             $formatter->assign('default', $this->_defaultGroup);
             $formatter->assign('groups', $this->_customMappings);
@@ -169,7 +185,9 @@ Returns TV schedules for the given channels at the given time.
         $moduleConfig   = $config->getModule(get_class($this));
         $params         = $moduleConfig->getParamsNames();
         $translator     = $this->getTranslator(NULL);
-        $locale         = $translator->getLocale(Erebot_Interface_I18n::LC_MESSAGES);
+        $locale         = $translator->getLocale(
+            Erebot_Interface_I18n::LC_MESSAGES
+        );
         $parsedLocale   = Locale::parseLocale($locale);
 
         $text   = $event->getText();
@@ -257,8 +275,10 @@ Returns TV schedules for the given channels at the given time.
         $mimeType   = $response->getHeader('content-type');
         $mimeType   = substr($mimeType, 0, strcspn($mimeType, ';'));
         if (!in_array($mimeType, $mimes))
-            return $this->sendMessage($target,
-                $translator->gettext('Invalid response received'));
+            return $this->sendMessage(
+                $target,
+                $translator->gettext('Invalid response received')
+            );
 
         $domdoc = new DOMDocument();
         $domdoc->validateOnParse        = FALSE;
