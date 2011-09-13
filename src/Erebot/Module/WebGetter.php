@@ -64,7 +64,7 @@ extends Erebot_Module_Base
                 $filter->add(
                     new Erebot_Event_Match_TextWildcard($trigger.' *', FALSE)
                 );
-                $this->_indexes[$trigger] = $index;
+                $this->_indexes[strtolower($trigger)] = $index;
             }
 
             $handler = new Erebot_EventHandler(
@@ -184,14 +184,15 @@ extends Erebot_Module_Base
         $config         = $this->_connection->getConfig($this->_channel);
         $moduleConfig   = $config->getModule(get_class($this));
         $params         = $moduleConfig->getParamsNames();
-        $translator     = $this->getTranslator(NULL);
-        $locale         = $translator->getLocale(
+        $translator     = $this->getTranslator($chan);
+        $logTranslator  = $this->getTranslator(NULL);
+        $locale         = $logTranslator->getLocale(
             Erebot_Interface_I18n::LC_MESSAGES
         );
         $parsedLocale   = Locale::parseLocale($locale);
 
         $text   = $event->getText();
-        $index  = $this->_indexes[$text[0]];
+        $index  = $this->_indexes[strtolower($text[0])];
         $method = in_array($index.'.post.1.name', $params)
             ? HTTP_Request2::METHOD_POST
             : HTTP_Request2::METHOD_GET;
@@ -258,12 +259,11 @@ extends Erebot_Module_Base
             'text/html',
             'application/xhtml+xml',
         );
-        $logger->debug($translator->gettext('Retrieving "%s"'), (string) $url);
+        $logger->debug($logTranslator->gettext('Retrieving "%s"'), (string) $url);
         try {
             $response   = $request->send();
         }
         catch (HTTP_Request2_Exception $e) {
-            $translator = $this->getTranslator($chan);
             $msg = $this->gettext(
                 'An error occurred while retrieving '.
                 'the information (<var name="error"/>)'
