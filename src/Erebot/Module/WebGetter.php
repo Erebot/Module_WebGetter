@@ -264,7 +264,7 @@ extends Erebot_Module_Base
             $response   = $request->send();
         }
         catch (HTTP_Request2_Exception $e) {
-            $msg = $this->gettext(
+            $msg = $translator->gettext(
                 'An error occurred while retrieving '.
                 'the information (<var name="error"/>)'
             );
