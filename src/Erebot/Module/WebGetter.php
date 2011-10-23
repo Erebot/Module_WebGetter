@@ -146,6 +146,16 @@ extends Erebot_Module_Base
         }
     }
 
+    static private function _pctPrefix($a)
+    {
+        return '%('.$a.')';
+    }
+
+    static private function _increment($a)
+    {
+        return '%'.($a + 1).'$';
+    }
+
     // Taken from PLOP :)
     static protected function _injectContext($msg, $args)
     {
@@ -158,13 +168,16 @@ extends Erebot_Module_Base
         // Mapping = array(name => index)
         $keys       = array_keys($args);
         $mapping    = array_flip($keys);
-        $pctPrefix  = create_function('$a', 'return "$(".$a.")";');
-        $increment  = create_function('$a', 'return "%".($a + 1)."\\$";');
-        $keys       = array_map($pctPrefix, $keys);
-        $values     = array_map($increment, $mapping);
+        $keys       = array_map(array('self', '_pctPrefix', $keys);
+        $values     = array_map(array('self', '_increment', $mapping);
         $mapping    = array_combine($keys, $values);
         $msg        = strtr($msg, $mapping);
         return vsprintf($msg, array_values($args));
+    }
+
+    static protected function _getNodeContent($node)
+    {
+        return $node->textContent;
     }
 
     public function handleRequest(
@@ -294,7 +307,6 @@ extends Erebot_Module_Base
 
         // Apply XPath selections & render the result.
         $xpath = new DOMXPath($domdoc);
-        $serializer = create_function('$node', 'return $node->textContent;');
         for ($i = 1; in_array($index.'.vars.'.$i, $params); $i++) {
             $res = $xpath->evaluate(
                 self::_injectContext(
@@ -306,7 +318,7 @@ extends Erebot_Module_Base
                 if ($res instanceof DOMNode)
                     $res = $res->textContent;
                 else if ($res instanceof DOMNodeList)
-                    $res = implode('', array_map($serializer, (array) $res));
+                    $res = implode('', array_map(array('self', '_getNodeContent'), (array) $res));
             }
             $context['vars.'.$i] = $res;
         }
