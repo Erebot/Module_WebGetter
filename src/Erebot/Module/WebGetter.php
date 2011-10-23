@@ -168,8 +168,8 @@ extends Erebot_Module_Base
         // Mapping = array(name => index)
         $keys       = array_keys($args);
         $mapping    = array_flip($keys);
-        $keys       = array_map(array('self', '_pctPrefix', $keys);
-        $values     = array_map(array('self', '_increment', $mapping);
+        $keys       = array_map(array('self', '_pctPrefix'), $keys);
+        $values     = array_map(array('self', '_increment'), $mapping);
         $mapping    = array_combine($keys, $values);
         $msg        = strtr($msg, $mapping);
         return vsprintf($msg, array_values($args));
