@@ -166,6 +166,7 @@ extends Erebot_Module_Base
             return sprintf($msg, $args);
 
         // Mapping = array(name => index)
+        $msg        = strtr($msg, array('%' => '%%'));
         $keys       = array_keys($args);
         $mapping    = array_flip($keys);
         $keys       = array_map(array('self', '_pctPrefix'), $keys);
