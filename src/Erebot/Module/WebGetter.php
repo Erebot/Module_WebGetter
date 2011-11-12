@@ -148,7 +148,7 @@ extends Erebot_Module_Base
 
     static private function _pctPrefix($a)
     {
-        return '%('.$a.')';
+        return '$('.$a.')';
     }
 
     static private function _increment($a)
@@ -305,6 +305,12 @@ extends Erebot_Module_Base
         libxml_clear_errors();
         libxml_use_internal_errors($uie);
 
+        // Prepare input encoding.
+        if (in_array($index.'.encoding', $params))
+            $encoding = $this->parseString($index.'.encoding');
+        else
+            $encoding = NULL;
+
         // Apply XPath selections & render the result.
         $xpath = new DOMXPath($domdoc);
         for ($i = 1; in_array($index.'.vars.'.$i, $params); $i++) {
@@ -317,8 +323,26 @@ extends Erebot_Module_Base
             if (is_object($res)) {
                 if ($res instanceof DOMNode)
                     $res = $res->textContent;
-                else if ($res instanceof DOMNodeList)
-                    $res = implode('', array_map(array('self', '_getNodeContent'), (array) $res));
+                else if ($res instanceof DOMNodeList) {
+                    $res = implode(
+                        '',
+                        array_map(
+                            array('self', '_getNodeContent'),
+                            (array) $res
+                        )
+                    );
+                }
+            }
+
+            // If an encoding was supplied, use it.
+            if ($encoding !== NULL) {
+                try {
+                    $res = Erebot_Utils::toUTF8($res, $encoding);
+                }
+                catch (Erebot_InvalidValueException $e) {
+                }
+                catch (Erebot_NotImplementedException $e) {
+                }
             }
             $context['vars.'.$i] = $res;
         }
