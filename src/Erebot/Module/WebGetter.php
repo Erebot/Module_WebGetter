@@ -228,6 +228,10 @@ extends Erebot_Module_Base
      *      possibly containing the values that will
      *      make up the substitutions in $msg.
      *
+     * \retval string
+     *      Resulting string after all substitutions
+     *      have been performed.
+     *
      * \note
      *      If $args is NULL, $msg is returned untouched.
      *      If a scalar was passed, this method basically
