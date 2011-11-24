@@ -16,11 +16,26 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * \brief
+ *      A module that fetches content off
+ *      an internet website.
+ *
+ * This module can be configured to respond to certain
+ * commands by fetching content from an internet website,
+ * grabbing some pieces of information using XPath expressions
+ * and then outputting those information to an IRC channel
+ * using a pre-configured format.
+ */
 class   Erebot_Module_WebGetter
 extends Erebot_Module_Base
 {
+    /// Maps triggers to their index in the configuration.
     protected $_indexes;
 
+    /**
+     * \copydoc Erebot_Module_Base::_reload()
+     */
     public function _reload($flags)
     {
         if ($flags & self::RELOAD_MEMBERS) {
@@ -81,13 +96,38 @@ extends Erebot_Module_Base
         }
     }
 
+    /// \copydoc Erebot_Module_Base::_unload()
     protected function _unload()
     {
     }
 
+    /**
+     * Sends help about this module.
+     *
+     * \param Erebot_Interface_Event_Base_TextMessage $event
+     *      Event that generated an help request.
+     *
+     * \param array $words
+     *      Contents of the help request. The first element
+     *      that makes up $words must be the module's name.
+     *      While the other elements should be any extra
+     *      arguments that make up the help request (such as
+     *      a command name).
+     *
+     *  \retval bool
+     *      TRUE to indicate the help request was handled successfully
+     *      or FALSE if this module was unable to provide any help
+     *      (such as when extra arguments were passed after a
+     *      command name and those arguments could not be parsed).
+     *
+     *  \note
+     *      If $words contains only one element, this method returns
+     *      general information on this module (such as a list of
+     *      all registered commands).
+     */
     public function getHelp(
         Erebot_Interface_Event_Base_TextMessage $event,
-                                                $words
+        array                                   $words
     )
     {
         if ($event instanceof Erebot_Interface_Event_Base_Private) {
@@ -146,17 +186,60 @@ extends Erebot_Module_Base
         }
     }
 
+    /**
+     * Prefixes a string so it can be used to replace
+     * Python-like substitutions with sprintf-like ones.
+     *
+     * \param string $a
+     *      Original string to prefix.
+     *
+     * \retval string
+     *      Prefixed string.
+     */
     static private function _pctPrefix($a)
     {
         return '$('.$a.')';
     }
 
+    /**
+     * Turn an index into an sprintf positional
+     * argument reference.
+     *
+     * \param int $a
+     *      Numeric index to some argument in an array.
+     *
+     * \retval string
+     *      Positional argument reference for use with
+     *      sprintf.
+     */
     static private function _increment($a)
     {
         return '%'.($a + 1).'$';
     }
 
-    // Taken from PLOP :)
+    /**
+     * Python-like formatting, compatible
+     * with dictionary-based formats (%(foo)s).
+     *
+     * \param string $msg
+     *
+     * \param mixed $args
+     *      Either NULL or a scalar type or an array,
+     *      possibly containing the values that will
+     *      make up the substitutions in $msg.
+     *
+     * \note
+     *      If $args is NULL, $msg is returned untouched.
+     *      If a scalar was passed, this method basically
+     *      returns the same thing as sprintf($msg, $args).
+     *      In an array was used, this does a job similar to Python's
+     *      "%(foo)s %(bar)d %(baz)f" % dictionary, except that only
+     *      the "s", "d" & "f" formats are supported and extra specifiers
+     *      (eg. width specification for float formats) are not supported.
+     *
+     * \note
+     *      Copy/pasted from PLOP :)
+     */
     static protected function _injectContext($msg, $args)
     {
         if ($args === NULL || (is_array($args) && !count($args)))
@@ -176,11 +259,33 @@ extends Erebot_Module_Base
         return vsprintf($msg, array_values($args));
     }
 
+    /**
+     * Returns the contents of some DOM node.
+     *
+     * \param DOMNode $node
+     *      DOM node from which the content will be extracted.
+     *
+     * \retval string
+     *      Contents of the node.
+     */
     static protected function _getNodeContent($node)
     {
         return $node->textContent;
     }
 
+    /**
+     * Handles a request to fetch some content
+     * off an internet website.
+     *
+     * \param Erebot_Interface_EventHandler $handler
+     *      Handler responsible for triggering this method.
+     *
+     * \param Erebot_Interface_Event_Base_TextMessage $event
+     *      Actual request to fetch some content.
+     *
+     * \retval NULL
+     *      This method does not return any value.
+     */
     public function handleRequest(
         Erebot_Interface_EventHandler           $handler,
         Erebot_Interface_Event_Base_TextMessage $event
