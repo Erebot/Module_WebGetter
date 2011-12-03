@@ -67,11 +67,15 @@ extends Erebot_Module_Base
                 $trigger    = trim($this->parseString($index.'.trigger'));
                 $token = $registry->registerTriggers($trigger, $matchAny);
                 if ($token === NULL) {
-                    $translator = $this->getTranslator(FALSE);
+                    $fmt = $this->getFormatter(FALSE);
                     throw new Exception(
-                        $translator->gettext(
-                            'Could not register trigger #'.$index.
-                            ' for "'.$trigger.'"'
+                        $fmt->_(
+                            'Could not register trigger #<var name="index"/> '.
+                            '(<var name="trigger"/>)',
+                            array(
+                                'index' => $index,
+                                'trigger' => $trigger,
+                            )
                         )
                     );
                 }
@@ -137,21 +141,20 @@ extends Erebot_Module_Base
         else
             $target = $chan = $event->getChan();
 
-        $translator = $this->getTranslator($chan);
         $trigger    = $this->parseString('trigger', 'tv');
 
         $bot        = $this->_connection->getBot();
         $moduleName = strtolower(get_class());
         $nbArgs     = count($words);
+        $fmt        = $this->getFormatter($chan);
 
         if ($nbArgs == 1 && $words[0] == $moduleName) {
-            $msg = $translator->gettext(
+            $msg = $fmt->_(
                 'Provides the <b><var name="trigger"/></b> command which '.
-                'retrieves information about TV schedules off the internet.'
+                'retrieves information about TV schedules off the internet.',
+                array('trigger' => $trigger)
             );
-            $formatter = new Erebot_Styling($msg, $translator);
-            $formatter->assign('trigger', $trigger);
-            $this->sendMessage($target, $formatter->render());
+            $this->sendMessage($target, $msg);
             return TRUE;
         }
 
@@ -159,29 +162,28 @@ extends Erebot_Module_Base
             return FALSE;
 
         if ($words[1] == $trigger) {
-            $msg = $translator->gettext(
+            $msg = $fmt->_(
                 "<b>Usage:</b> !<var name='trigger'/> [<u>time</u>] ".
                 "[<u>channels</u>]. Returns TV schedules for the given ".
                 "channels at the given time. [<u>time</u>] can be expressed ".
                 "using either 12h or 24h notation. [<u>channels</u>] can be ".
                 "a single channel name, a list of channels (separated by ".
-                "commas) or one of the pre-defined groups of channels."
+                "commas) or one of the pre-defined groups of channels.",
+                array('trigger' => $trigger)
             );
-            $formatter = new Erebot_Styling($msg, $translator);
-            $formatter->assign('trigger', $trigger);
-            $this->sendMessage($target, $formatter->render());
+            $this->sendMessage($target, $msg);
 
-            $msg = $translator->gettext(
+            $msg = $fmt->_(
                 "If none is given, the default group (<b><var ".
                 "name='default'/></b>) is used. The following ".
                 "groups are available: <for from='groups' key='group' ".
-                "item='dummy'><b><var name='group'/></b></for>."
+                "item='dummy'><b><var name='group'/></b></for>.",
+                array(
+                    'default' => $this->_defaultGroup,
+                    'groups' => $this->_customMappings,
+                )
             );
-            $formatter = new Erebot_Styling($msg, $translator);
-            $formatter->assign('default', $this->_defaultGroup);
-            $formatter->assign('groups', $this->_customMappings);
-            $this->sendMessage($target, $formatter->render());
-
+            $this->sendMessage($target, $msg);
             return TRUE;
         }
     }
@@ -307,9 +309,9 @@ extends Erebot_Module_Base
         $config         = $this->_connection->getConfig($this->_channel);
         $moduleConfig   = $config->getModule(get_class($this));
         $params         = $moduleConfig->getParamsNames();
-        $translator     = $this->getTranslator($chan);
-        $logTranslator  = $this->getTranslator(NULL);
-        $locale         = $logTranslator->getLocale(
+        $fmt            = $this->getFormatter($chan);
+        $botFmt         = $this->getFormatter(NULL);
+        $locale         = $botFmt->getTranslator()->getLocale(
             Erebot_Interface_I18n::LC_MESSAGES
         );
         $parsedLocale   = Locale::parseLocale($locale);
@@ -382,25 +384,27 @@ extends Erebot_Module_Base
             'text/html',
             'application/xhtml+xml',
         );
-        $logger->debug($logTranslator->gettext('Retrieving "%s"'), (string) $url);
+        $logger->debug(
+            $botFmt->_('Retrieving "<var name="url"/>"'),
+            array('url' => (string) $url)
+        );
         try {
             $response   = $request->send();
         }
         catch (HTTP_Request2_Exception $e) {
-            $msg = $translator->gettext(
+            $msg = $fmt->_(
                 'An error occurred while retrieving '.
-                'the information (<var name="error"/>)'
+                'the information (<var name="error"/>)',
+                array('error', $e->getMessage())
             );
-            $tpl = new Erebot_Styling($msg, $translator);
-            $tpl->assign('error', $e->getMessage());
-            return $this->sendMessage($target, $tpl->render());
+            return $this->sendMessage($target, $msg);
         }
         $mimeType   = $response->getHeader('content-type');
         $mimeType   = substr($mimeType, 0, strcspn($mimeType, ';'));
         if (!in_array($mimeType, $mimes))
             return $this->sendMessage(
                 $target,
-                $translator->gettext('Invalid response received')
+                $fmt->_('Invalid response received')
             );
 
         $domdoc = new DOMDocument();
@@ -421,7 +425,7 @@ extends Erebot_Module_Base
         else
             $encoding = NULL;
 
-        // Apply XPath selections & render the result.
+        // Apply XPath selections & do the rendering.
         $xpath = new DOMXPath($domdoc);
         for ($i = 1; in_array($index.'.vars.'.$i, $params); $i++) {
             $res = $xpath->evaluate(
