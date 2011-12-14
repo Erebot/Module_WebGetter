@@ -318,7 +318,13 @@ extends Erebot_Module_Base
         }
     }
 
-    protected function _processResponse($response, $encoding, $index, $params, &$context)
+    protected function _processResponse(
+        $response,
+        $encoding,
+        $index,
+        $params,
+        &$context
+    )
     {
         $domdoc = new DOMDocument();
         $domdoc->validateOnParse        = FALSE;
