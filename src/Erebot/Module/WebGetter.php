@@ -34,7 +34,16 @@ extends Erebot_Module_Base
     protected $_indexes;
 
     /**
-     * \copydoc Erebot_Module_Base::_reload()
+     * This method is called whenever the module is (re)loaded.
+     *
+     * \param int $flags
+     *      A bitwise OR of the Erebot_Module_Base::RELOAD_*
+     *      constants. Your method should take proper actions
+     *      depending on the value of those flags.
+     *
+     * \note
+     *      See the documentation on individual RELOAD_*
+     *      constants for a list of possible values.
      */
     public function _reload($flags)
     {
@@ -143,7 +152,6 @@ extends Erebot_Module_Base
 
         $trigger    = $this->parseString('trigger', 'tv');
 
-        $bot        = $this->_connection->getBot();
         $moduleName = strtolower(get_class());
         $nbArgs     = count($words);
         $fmt        = $this->getFormatter($chan);
@@ -189,37 +197,6 @@ extends Erebot_Module_Base
     }
 
     /**
-     * Prefixes a string so it can be used to replace
-     * Python-like substitutions with sprintf-like ones.
-     *
-     * \param string $a
-     *      Original string to prefix.
-     *
-     * \retval string
-     *      Prefixed string.
-     */
-    static private function _pctPrefix($a)
-    {
-        return '$('.$a.')';
-    }
-
-    /**
-     * Turn an index into an sprintf positional
-     * argument reference.
-     *
-     * \param int $a
-     *      Numeric index to some argument in an array.
-     *
-     * \retval string
-     *      Positional argument reference for use with
-     *      sprintf.
-     */
-    static private function _increment($a)
-    {
-        return '%'.($a + 1).'$';
-    }
-
-    /**
      * Python-like formatting, compatible
      * with dictionary-based formats (%(foo)s).
      *
@@ -254,29 +231,139 @@ extends Erebot_Module_Base
         if (!is_array($args))
             return sprintf($msg, $args);
 
-        // Mapping = array(name => index)
+        $mapKeys = $mapValues = array();
+
         $msg        = strtr($msg, array('%' => '%%'));
         $keys       = array_keys($args);
         $mapping    = array_flip($keys);
-        $keys       = array_map(array('self', '_pctPrefix'), $keys);
-        $values     = array_map(array('self', '_increment'), $mapping);
-        $mapping    = array_combine($keys, $values);
+
+        foreach ($keys as $key)
+            $mapKeys[] = '$('.$key.')';
+        foreach ($mapping as $value)
+            $mapValues[] = '%'.($value + 1).'$';
+
+        // Mapping = array(name => index)
+        $mapping    = array_combine($mapKeys, $mapValues);
         $msg        = strtr($msg, $mapping);
         return vsprintf($msg, array_values($args));
     }
 
-    /**
-     * Returns the contents of some DOM node.
-     *
-     * \param DOMNode $node
-     *      DOM node from which the content will be extracted.
-     *
-     * \retval string
-     *      Contents of the node.
-     */
-    static protected function _getNodeContent($node)
+    protected function _prepareContext($botFmt, $text)
     {
-        return $node->textContent;
+        // Prepare context.
+        $locale         = $botFmt->getTranslator()->getLocale(
+            Erebot_Interface_I18n::LC_MESSAGES
+        );
+        $parsedLocale   = Locale::parseLocale($locale);
+        $context = array(
+            'language'  => $parsedLocale['language'],
+            'region'    => $parsedLocale['region'],
+            'locale'    => $locale,
+            'locale2'   => str_replace('_', '-', $locale),
+            '0'         => $text->getTokens(1),
+        );
+
+        foreach ($text as $i => $token) {
+            if ($i == 0)
+                continue;
+            $context[(string) $i] = $token;
+        }
+        return $context;
+    }
+
+    protected function _prepareRequest($index, $context, $method)
+    {
+        $url = self::_injectContext(
+            $this->parseString($index.'.url'),
+            $context
+        );
+        $request = new HTTP_Request2(
+            $url,
+            $method,
+            array(
+                'follow_redirects'  => TRUE,
+                'ssl_verify_peer'   => FALSE,
+                'ssl_verify_host'   => FALSE,
+                'timeout'           => $this->parseInt('timeout', 8),
+                'connect_timeout'   => $this->parseInt('conn_timeout', 3),
+            )
+        );
+        $request->setCookieJar(TRUE);
+        return $request;
+    }
+
+    protected function _addGetParams($index, $params, $context, $url)
+    {
+        for ($i = 1; in_array($index.'.get.'.$i.'.name', $params) &&
+            in_array($index.'.get.'.$i.'.value', $params); $i++) {
+            $name   = $this->parseString($index.'.get.'.$i.'.name');
+            $value  = self::_injectContext(
+                $this->parseString($index.'.get.'.$i.'.value'),
+                $context
+            );
+            $url->setQueryVariable($name, $value);
+        }
+    }
+
+    protected function _addPostParams($index, $params, $context, $request)
+    {
+        for ($i = 1; in_array($index.'.post.'.$i.'.name', $params) &&
+            in_array($index.'.post.'.$i.'.value', $params); $i++) {
+            $name   = $this->parseString($index.'.post.'.$i.'.name');
+            $value  = self::_injectContext(
+                $this->parseString($index.'.post.'.$i.'.value'),
+                $context
+            );
+            $request->addPostParameter($name, $value);
+        }
+    }
+
+    protected function _processResponse($response, $encoding, $index, $params, &$context)
+    {
+        $domdoc = new DOMDocument();
+        $domdoc->validateOnParse        = FALSE;
+        $domdoc->preserveWhitespace     = FALSE;
+        $domdoc->strictErrorChecking    = FALSE;
+        $domdoc->substituteEntities     = TRUE;
+        $domdoc->resolveExternals       = FALSE;
+        $domdoc->recover                = TRUE;
+        $uie = libxml_use_internal_errors(TRUE);
+        $domdoc->loadHTML($response->getBody());
+        libxml_clear_errors();
+        libxml_use_internal_errors($uie);
+
+        // Apply XPath selections & add date to the context.
+        $xpath = new DOMXPath($domdoc);
+        for ($i = 1; in_array($index.'.vars.'.$i, $params); $i++) {
+            $res = $xpath->evaluate(
+                self::_injectContext(
+                    $this->parseString($index.'.vars.'.$i),
+                    $context
+                )
+            );
+            if (is_object($res)) {
+                if ($res instanceof DOMNode)
+                    $res = $res->textContent;
+                else if ($res instanceof DOMNodeList) {
+                    $nodesRes = '';
+                    foreach ((array) $res as $node)
+                        $nodesRes .= $node->textContent;
+                    $res = $nodesRes;
+                }
+            }
+
+            // If an encoding was supplied, use it.
+            if ($encoding !== NULL) {
+                try {
+                    $res = Erebot_Utils::toUTF8($res, $encoding);
+                }
+                catch (Erebot_InvalidValueException $e) {
+                }
+                catch (Erebot_NotImplementedException $e) {
+                }
+            }
+            $context['vars.'.$i] = $res;
+        }
     }
 
     /**
@@ -291,6 +378,8 @@ extends Erebot_Module_Base
      *
      * \retval NULL
      *      This method does not return any value.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function handleRequest(
         Erebot_Interface_EventHandler           $handler,
@@ -311,10 +400,6 @@ extends Erebot_Module_Base
         $params         = $moduleConfig->getParamsNames();
         $fmt            = $this->getFormatter($chan);
         $botFmt         = $this->getFormatter(NULL);
-        $locale         = $botFmt->getTranslator()->getLocale(
-            Erebot_Interface_I18n::LC_MESSAGES
-        );
-        $parsedLocale   = Locale::parseLocale($locale);
 
         $text   = $event->getText();
         $index  = $this->_indexes[strtolower($text[0])];
@@ -322,60 +407,11 @@ extends Erebot_Module_Base
             ? HTTP_Request2::METHOD_POST
             : HTTP_Request2::METHOD_GET;
 
-        // Prepare context.
-        $context = array(
-            'language'  => $parsedLocale['language'],
-            'region'    => $parsedLocale['region'],
-            'locale'    => $locale,
-            'locale2'   => str_replace('_', '-', $locale),
-            '0'         => $text->getTokens(1),
-        );
-        foreach ($text as $i => $token) {
-            if ($i == 0)
-                continue;
-            $context[(string) $i] = $token;
-        }
-
-        // Prepare request.
-        $url = self::_injectContext(
-            $this->parseString($index.'.url'),
-            $context
-        );
-        $request = new HTTP_Request2(
-            $url,
-            $method,
-            array(
-                'follow_redirects'  => TRUE,
-                'ssl_verify_peer'   => FALSE,
-                'ssl_verify_host'   => FALSE,
-                'timeout'           => $this->parseInt('timeout', 8),
-                'connect_timeout'   => $this->parseInt('conn_timeout', 3),
-            )
-        );
-        $request->setCookieJar(TRUE);
-        $url = $request->getUrl();
-
-        // GET variables.
-        for ($i = 1; in_array($index.'.get.'.$i.'.name', $params) &&
-            in_array($index.'.get.'.$i.'.value', $params); $i++) {
-            $name   = $this->parseString($index.'.get.'.$i.'.name');
-            $value  = self::_injectContext(
-                $this->parseString($index.'.get.'.$i.'.value'),
-                $context
-            );
-            $url->setQueryVariable($name, $value);
-        }
-
-        // POST variables.
-        for ($i = 1; in_array($index.'.post.'.$i.'.name', $params) &&
-            in_array($index.'.post.'.$i.'.value', $params); $i++) {
-            $name   = $this->parseString($index.'.post.'.$i.'.name');
-            $value  = self::_injectContext(
-                $this->parseString($index.'.post.'.$i.'.value'),
-                $context
-            );
-            $request->addPostParameter($name, $value);
-        }
+        $context    = $this->_prepareContext($botFmt, $text);
+        $request    = $this->_prepareRequest($index, $context, $method);
+        $url        = $request->getUrl();
+        $this->_addGetParams($index, $params, $context, $url);
+        $this->_addPostParams($index, $params, $context, $request);
 
         // Parse the result.
         $mimes      = array(
@@ -385,8 +421,10 @@ extends Erebot_Module_Base
             'application/xhtml+xml',
         );
         $logger->debug(
-            $botFmt->_('Retrieving "<var name="url"/>"'),
-            array('url' => (string) $url)
+            $botFmt->_(
+                'Retrieving "<var name="url"/>"',
+                array('url' => (string) $url)
+            )
         );
         try {
             $response   = $request->send();
@@ -407,67 +445,23 @@ extends Erebot_Module_Base
                 $fmt->_('Invalid response received')
             );
 
-        $domdoc = new DOMDocument();
-        $domdoc->validateOnParse        = FALSE;
-        $domdoc->preserveWhitespace     = FALSE;
-        $domdoc->strictErrorChecking    = FALSE;
-        $domdoc->substituteEntities     = TRUE;
-        $domdoc->resolveExternals       = FALSE;
-        $domdoc->recover                = TRUE;
-        $uie = libxml_use_internal_errors(TRUE);
-        $domdoc->loadHTML($response->getBody());
-        libxml_clear_errors();
-        libxml_use_internal_errors($uie);
-
         // Prepare input encoding.
         if (in_array($index.'.encoding', $params))
             $encoding = $this->parseString($index.'.encoding');
         else
             $encoding = NULL;
 
-        // Apply XPath selections & do the rendering.
-        $xpath = new DOMXPath($domdoc);
-        for ($i = 1; in_array($index.'.vars.'.$i, $params); $i++) {
-            $res = $xpath->evaluate(
-                self::_injectContext(
-                    $this->parseString($index.'.vars.'.$i),
-                    $context
-                )
-            );
-            if (is_object($res)) {
-                if ($res instanceof DOMNode)
-                    $res = $res->textContent;
-                else if ($res instanceof DOMNodeList) {
-                    $res = implode(
-                        '',
-                        array_map(
-                            array('self', '_getNodeContent'),
-                            (array) $res
-                        )
-                    );
-                }
-            }
-
-            // If an encoding was supplied, use it.
-            if ($encoding !== NULL) {
-                try {
-                    $res = Erebot_Utils::toUTF8($res, $encoding);
-                }
-                catch (Erebot_InvalidValueException $e) {
-                }
-                catch (Erebot_NotImplementedException $e) {
-                }
-            }
-            $context['vars.'.$i] = $res;
-        }
-
-        return $this->sendMessage(
-            $target,
-            self::_injectContext(
-                $this->parseString($index.'.format'),
-                $context
-            )
+        $this->_processResponse(
+            $response, $encoding, $index,
+            $params, $context
         );
+
+        $output = self::_injectContext(
+            $this->parseString($index.'.format'),
+            $context
+        );
+        return $this->sendMessage($target, $output);
+
     }
 }
 
