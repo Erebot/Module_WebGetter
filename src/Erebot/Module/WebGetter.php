@@ -248,6 +248,18 @@ extends Erebot_Module_Base
         return vsprintf($msg, array_values($args));
     }
 
+    /**
+     * Returns the context for a new HTTP request.
+     *
+     * \param Erebot_Interface_I18n $botFmt
+     *      Main formatter used by the bot.
+     *
+     * \param Erebot_Interface_TextWrapper $text
+     *      The text from the IRC event.
+     *
+     * \retval array
+     *      Array containing the new context.
+     */
     protected function _prepareContext($botFmt, $text)
     {
         // Prepare context.
@@ -271,6 +283,22 @@ extends Erebot_Module_Base
         return $context;
     }
 
+    /**
+     * Creates a new HTTP request.
+     *
+     * \param int $index
+     *      Index of the trigger.
+     *
+     * \param array $context
+     *      Array containing the context for this request.
+     *
+     * \param opaque $method
+     *      HTTP method, either HTTP_Request2::METHOD_GET
+     *      or HTTP_Request2::METHOD_POST.
+     *
+     * \retval HTTP_Request2
+     *      The new HTTP request.
+     */
     protected function _prepareRequest($index, $context, $method)
     {
         $url = self::_injectContext(
@@ -292,6 +320,28 @@ extends Erebot_Module_Base
         return $request;
     }
 
+    /**
+     * Adds GET parameters to an URL.
+     *
+     * \param int $index
+     *      Index of the trigger.
+     *
+     * \param array $params
+     *      A list with the names of the parameters associated
+     *      with this module.
+     *
+     * \param array $context
+     *      Context for this HTTP request.
+     *
+     * \param opaque $url
+     *      URL the parameters will be added to.
+     *
+     * \return
+     *      This method does not return anything.
+     *
+     * \post
+     *      The URL is updated with the GET parameters.
+     */
     protected function _addGetParams($index, $params, $context, $url)
     {
         for ($i = 1; in_array($index.'.get.'.$i.'.name', $params) &&
@@ -305,6 +355,28 @@ extends Erebot_Module_Base
         }
     }
 
+    /**
+     * Adds POST parameters to an HTTP request.
+     *
+     * \param int $index
+     *      Index of the trigger.
+     *
+     * \param array $params
+     *      A list with the names of the parameters associated
+     *      with this module.
+     *
+     * \param array $context
+     *      Context for this HTTP request.
+     *
+     * \param HTTP_Request2 $request
+     *      HTTP request the parameters will be added to.
+     *
+     * \return
+     *      This method does not return anything.
+     *
+     * \post
+     *      The HTTP request is updated with the POST parameters.
+     */
     protected function _addPostParams($index, $params, $context, $request)
     {
         for ($i = 1; in_array($index.'.post.'.$i.'.name', $params) &&
@@ -318,6 +390,34 @@ extends Erebot_Module_Base
         }
     }
 
+    /**
+     * Processes the response to an HTTP request.
+     *
+     * \param opaque $response
+     *      Response to the HTTP request.
+     *
+     * \param mixed $encoding
+     *      Encoding for the response. Either NULL
+     *      (do not change the encoding) or a string
+     *      with the name of the encoding.
+     *
+     * \param int $index
+     *      Index of the trigger.
+     *
+     * \param array $params
+     *      A list with the names of the parameters
+     *      associated with this module.
+     *
+     * \param array $context
+     *      Context for this HTTP request.
+     *
+     * \return
+     *      This method does not return anything.
+     *
+     * \post
+     *      The context is updated with the information
+     *      extracted from the HTTP response.
+     */
     protected function _processResponse(
         $response,
         $encoding,
