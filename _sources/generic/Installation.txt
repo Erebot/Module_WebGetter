@@ -38,17 +38,17 @@ Just use whatever tool your distribution provides to manage PEAR packages:
 You can install (**as a privileged user**) either the latest stable release
 using a command such as:
 
-..  sourcecode:: bash
+..  parsed-code:: bash
 
-    $ pear channel-discover pear.erebot.net
-    $ pear install erebot/<module>
+        $ pear channel-discover pear.erebot.net
+        $ pear install erebot/|project|
 
 ... or you can install the latest unstable version instead, using:
 
-..  sourcecode:: bash
+..  parsed-code:: bash
 
-    $ pear channel-discover pear.erebot.net
-    $ pear install erebot/<module>-alpha
+        $ pear channel-discover pear.erebot.net
+        $ pear install erebot/|project|-alpha
 
 Please note that the ``channel-discover`` command needs to be run only once
 (pear and pyrus will refuse to discover a PEAR channel more than once anyway).
@@ -72,7 +72,7 @@ First, make sure a git client is installed on your machine.
 Under Linux, **from a root shell**, run the command that most closely matches
 the tools provided by your distribution:
 
-..  sourcecode:: bash
+..  parsed-code:: bash
 
     # For apt-based distributions such as Debian or Ubuntu
     $ apt-get install git
@@ -92,21 +92,21 @@ the tools provided by your distribution:
 
 Now, clone the module's repository:
 
-..  sourcecode:: bash
+..  parsed-code:: bash
 
     $ cd /path/to/Erebot/vendor/
-    $ git clone --recursive git://github.com/fpoirotte/<module>.git
+    $ git clone --recursive git://github.com/fpoirotte/|project|.git
 
 ..  note::
     Linux users (especially Erebot developers) may prefer to create a separate
     checkout for each component and then use symbolic links to join them
     together, like this:
 
-    ..  sourcecode:: bash
+    ..  parsed-code:: bash
 
-        $ git clone --recursive git://github.com/fpoirotte/<module>.git
+        $ git clone --recursive git://github.com/fpoirotte/|project|.git
         $ cd Erebot/vendor/
-        $ ln -s ../../<module>
+        $ ln -s ../../|project|
 
 Optionally, you can compile the translation files for each component.
 However, this requires that `gettext`_ and `phing`_ be installed on your machine
@@ -119,9 +119,9 @@ Check out this module's `prerequisites`_ for more information.
 Once you got those two up and running, the translation files can be compiled
 using these commands:
 
-..  sourcecode:: bash
+..  parsed-code:: bash
 
-    $ cd /path/to/Erebot/vendor/
+    $ cd /path/to/Erebot/vendor/|project|
     $ phing
 
 
