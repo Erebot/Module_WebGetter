@@ -539,7 +539,7 @@ extends Erebot_Module_Base
             $msg = $fmt->_(
                 'An error occurred while retrieving '.
                 'the information (<var name="error"/>)',
-                array('error', $e->getMessage())
+                array('error' => $e->getMessage())
             );
             return $this->sendMessage($target, $msg);
         }
