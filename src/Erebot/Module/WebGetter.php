@@ -111,38 +111,21 @@ extends Erebot_Module_Base
         }
     }
 
-    /// \copydoc Erebot_Module_Base::_unload()
-    protected function _unload()
-    {
-    }
-
     /**
-     * Sends help about this module.
+     * Provides help about this module.
      *
      * \param Erebot_Interface_Event_Base_TextMessage $event
-     *      Event that generated an help request.
+     *      Some help request.
      *
-     * \param array $words
-     *      Contents of the help request. The first element
-     *      that makes up $words must be the module's name.
-     *      While the other elements should be any extra
-     *      arguments that make up the help request (such as
-     *      a command name).
-     *
-     *  \retval bool
-     *      TRUE to indicate the help request was handled successfully
-     *      or FALSE if this module was unable to provide any help
-     *      (such as when extra arguments were passed after a
-     *      command name and those arguments could not be parsed).
-     *
-     *  \note
-     *      If $words contains only one element, this method returns
-     *      general information on this module (such as a list of
-     *      all registered commands).
+     * \param Erebot_Interface_TextWrapper $words
+     *      Parameters passed with the request. This is the same
+     *      as this module's name when help is requested on the
+     *      module itself (in opposition with help on a specific
+     *      command provided by the module).
      */
     public function getHelp(
         Erebot_Interface_Event_Base_TextMessage $event,
-        array                                   $words
+        Erebot_Interface_TextWrapper            $words
     )
     {
         if ($event instanceof Erebot_Interface_Event_Base_Private) {
