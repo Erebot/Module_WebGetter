@@ -13,6 +13,12 @@ Contents:
 
     generic/Installation
 
+Current status on http://travis-ci.org/:
+
+..  image:: https://secure.travis-ci.org/fpoirotte/Erebot_Module_WebGetter.png
+    :alt: unknown
+    :target: http://travis-ci.org/#!/fpoirotte/Erebot_Module_WebGetter/
+
 
 ..  [#] :abbr:`XPath (XML Path Language)` is a
     :abbr:`W3C (World Wide Web Consortium)` `recommendation`_ designed as a
@@ -27,3 +33,4 @@ Contents:
     http://www.w3.org/TR/xpath/
 
 .. vim: ts=4 et
+
