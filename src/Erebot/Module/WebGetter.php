@@ -301,7 +301,9 @@ extends Erebot_Module_Base
                 'connect_timeout'   => $this->parseInt('conn_timeout', 3),
             )
         );
-        $request->setCookieJar(TRUE);
+        $cookies = $this->parseBool($index.'.cookies', TRUE);
+        if ($cookies)
+            $request->setCookieJar(TRUE);
         return $request;
     }
 
@@ -426,32 +428,55 @@ extends Erebot_Module_Base
         // Apply XPath selections & add date to the context.
         $xpath = new DOMXPath($domdoc);
         for ($i = 1; in_array($index.'.vars.'.$i, $params); $i++) {
-            $res = $xpath->evaluate(
+            $res = $xpath->query(
                 self::_injectContext(
                     $this->parseString($index.'.vars.'.$i),
                     $context
                 )
             );
+
             if (is_object($res)) {
-                if ($res instanceof DOMNode)
-                    $res = $res->textContent;
+                if ($res instanceof DOMNode) {
+                    $res = array($res->textContent);
+                }
                 else if ($res instanceof DOMNodeList) {
-                    $nodesRes = '';
-                    foreach ((array) $res as $node)
-                        $nodesRes .= $node->textContent;
+                    $nodesRes = array();
+                    $nbNodes = $res->length;
+                    for ($j = 0; $j < $nbNodes; $j++) {
+                        $textContent = trim($res->item($j)->textContent);
+                        if ($textContent != "")
+                            $nodesRes[] = $textContent;
+                    }
                     $res = $nodesRes;
                 }
             }
+            else if (is_string($res))
+                ;
+            else $res = array("");
 
             // If an encoding was supplied, use it.
             if ($encoding !== NULL) {
                 try {
-                    $res = Erebot_Utils::toUTF8($res, $encoding);
+                    $res = array_map(
+                        'Erebot_Utils::toUTF8',
+                        $res,
+                        array_fill(0, count($res), $encoding)
+                    );
                 }
                 catch (Erebot_InvalidValueException $e) {
                 }
                 catch (Erebot_NotImplementedException $e) {
                 }
+            }
+
+            switch (count($res)) {
+                case 0:
+                    $res = "";
+                    break;
+
+                case 1:
+                    $res = $res[0];
+                    break;
             }
             $context['vars.'.$i] = $res;
         }
@@ -518,7 +543,7 @@ extends Erebot_Module_Base
             )
         );
         try {
-            $response   = $request->send();
+            $response = $request->send();
         }
         catch (HTTP_Request2_Exception $e) {
             $msg = $fmt->_(
@@ -547,12 +572,62 @@ extends Erebot_Module_Base
             $params, $context
         );
 
-        $output = self::_injectContext(
-            $this->parseString($index.'.format'),
-            $context
-        );
-        return $this->sendMessage($target, $output);
+        $multiples = array();
+        foreach ($context as $name => $value) {
+            if (substr($name, 0, 5) == 'vars.' && is_array($value)) {
+                if (count($multiples) &&
+                    count($context[$name]) != count($context[$multiples[0]])) {
+                    return $this->sendMessage(
+                        $target,
+                        $fmt->_("Multiple arrays with varying lengths found")
+                    );
+                }
+                $multiples[] = $name;
+            }
+        }
 
+        if (!count($multiples)) {
+            $output = self::_injectContext(
+                $this->parseString($index.'.format'),
+                $context
+            );
+
+            if ($output == "") {
+                return $this->sendMessage(
+                    $target,
+                    $fmt->_("Oops, nothing to send!")
+                );
+            }
+            return $this->sendMessage($target, $output);
+        }
+
+        // Duplicate unique values to match length of other arrays.
+        $nbValues   = count($context[$multiples[0]]);
+        $keys       = array_keys($context);
+        $linesSent  = 0;
+        $oldContext = $context;
+
+        for ($i = 0; $i < $nbValues; $i++) {
+            $context = array();
+            foreach ($keys as $key) {
+                if (!is_array($oldContext[$key]))
+                    $context[$key] = $oldContext[$key];
+                else
+                    $context[$key] = $oldContext[$key][$i];
+            }
+
+            $output = self::_injectContext(
+                $this->parseString($index.'.format'),
+                $context
+            );
+            if ($output == "")
+                continue;
+            $this->sendMessage($target, $output);
+            $linesSent++;
+        }
+
+        if (!$linesSent)
+            $this->sendMessage($target, $fmt->_("Oops, nothing to send!"));
     }
 }
 
