@@ -15,9 +15,9 @@ Contents:
 
 Current status on http://travis-ci.org/:
 
-..  image:: https://secure.travis-ci.org/fpoirotte/Erebot_Module_WebGetter.png
+..  image:: https://secure.travis-ci.org/Erebot/Erebot_Module_WebGetter.png
     :alt: unknown
-    :target: http://travis-ci.org/#!/fpoirotte/Erebot_Module_WebGetter/
+    :target: http://travis-ci.org/#!/Erebot/Erebot_Module_WebGetter/
 
 
 ..  [#] :abbr:`XPath (XML Path Language)` is a
