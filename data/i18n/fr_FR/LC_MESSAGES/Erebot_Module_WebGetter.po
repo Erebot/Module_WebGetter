@@ -1,20 +1,20 @@
-# SOME DESCRIPTIVE TITLE.
+# French translations for Erebot_Module_WebGetter package.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Automatically generated, 2012.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Erebot_Module_WebGetter 0.1.0\n"
 "Report-Msgid-Bugs-To: i18n@erebot.net\n"
-"POT-Creation-Date: 2012-05-20 23:18+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2012-05-20 23:12+0200\n"
+"PO-Revision-Date: 2012-05-20 23:12+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 #
 # File: src/Erebot/Module/WebGetter.php, line: 159
 msgid ""
@@ -24,16 +24,23 @@ msgid ""
 "channel name, a list of channels (separated by commas) or one of the pre-"
 "defined groups of channels."
 msgstr ""
+"<b>Usage :</b> !<var name='trigger'/> [<u>heure</u>] [<u>chaînes</u>]. Renvoie "
+"les programmes TV pour les chaînes et l'heure données. [<u>heure</u>] peut être "
+"fournit via la notation 12h ou 24h. [<u>chaînes</u>] peut être un seul nom de "
+"chaîne de TV, une liste de chaînes (séparées par des virgules) ou le nom d'un "
+"groupes de chaînes prédéfini."
 #
 # File: src/Erebot/Module/WebGetter.php, line: 550
 msgid ""
 "An error occurred while retrieving the information (<var name=\"error\"/>)"
 msgstr ""
+"Une erreur est survenue lors de la récupération des information (<var name=\"error\"/>)"
 #
 # File: src/Erebot/Module/WebGetter.php, line: 82
 msgid ""
 "Could not register trigger #<var name=\"index\"/> (<var name=\"trigger\"/>)"
 msgstr ""
+"Impossible d'enregistrer le déclencheur #<var name=\"index\"/> (<var name=\"trigger\"/>)"
 #
 # File: src/Erebot/Module/WebGetter.php, line: 170
 msgid ""
@@ -41,26 +48,31 @@ msgid ""
 "The following groups are available: <for from='groups' key='group' "
 "item='dummy'><b><var name='group'/></b></for>."
 msgstr ""
+"Si aucun n'est donné, le groupe par défaut (<b><var name='default'/></b>) est "
+"utilisé. Les groupes suivants sont disponibles : <for from='groups' "
+"key='group' item='dummy'><b><var name='group'/></b></for>."
 #
 # File: src/Erebot/Module/WebGetter.php, line: 561
 msgid "Invalid response received"
-msgstr ""
+msgstr "Réponse non valide reçue"
 #
 # File: src/Erebot/Module/WebGetter.php, line: 582
 msgid "Multiple arrays with varying lengths found"
-msgstr ""
+msgstr "Plusieurs tableaux de tailles différentes ont été trouvés"
 #
 # File: src/Erebot/Module/WebGetter.php, line: 598
 # File: src/Erebot/Module/WebGetter.php, line: 630
 msgid "Oops, nothing to send!"
-msgstr ""
+msgstr "Oups, rien à envoyer !"
 #
 # File: src/Erebot/Module/WebGetter.php, line: 146
 msgid ""
 "Provides the <b><var name=\"trigger\"/></b> command which retrieves "
 "information about TV schedules off the internet."
 msgstr ""
+"Fournit la commande <b><var name=\"trigger\"/></b> qui récupère "
+"des informations sur les programmes TV depuis internet."
 #
 # File: src/Erebot/Module/WebGetter.php, line: 541
 msgid "Retrieving \"<var name=\"url\"/>\""
-msgstr ""
+msgstr "Récupération de \"<var name=\"url\"/>\""
