@@ -23,9 +23,31 @@ $metadata['pear.erebot.net/' . $packageName] += array(
         'pear2.php.net/pyrus' => '> 2.0.0alpha3',
         'virt-Erebot_API' => '0.2.*',
         'pear.erebot.net/Erebot',
+        'pear.php.net/HTTP_Request2' => '>= 2.1.1',
     ),
     'license' => array(
         'GPL' => 'http://www.gnu.org/licenses/gpl-3.0.txt',
+    ),
+);
+
+$metadata['pear.php.net/HTTP_Request2'] = array(
+    'version' => '2.1.1',
+    'requires' => array(
+        'php' => '>= 5.2.0',
+        'pear.php.net/Net_URL2' => '>= 2.0.0',
+    ),
+    'suggests' => array(
+        'pecl.php.net/curl',
+        'pecl.php.net/fileinfo',
+        'pecl.php.net/zlib',
+        'pecl.php.net/openssl',
+    ),
+);
+
+$metadata['pear.php.net/Net_URL2'] = array(
+    'version' => '2.0.0',
+    'requires' => array(
+        'php' => '>= 5.0.0',
     ),
 );
 
