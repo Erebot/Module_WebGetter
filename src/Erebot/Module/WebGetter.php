@@ -33,9 +33,6 @@ extends Erebot_Module_Base
     /// Maps triggers to their index in the configuration.
     protected $_indexes;
 
-    /// HTTP_Request2 adapter to use to retrieve content.
-    protected $_httpAdapter = 'HTTP_Request2_Adapter_Socket';
-
     /**
      * This method is called whenever the module is (re)loaded.
      *
@@ -302,7 +299,6 @@ extends Erebot_Module_Base
                 'ssl_verify_host'   => FALSE,
                 'timeout'           => $this->parseInt('timeout', 8),
                 'connect_timeout'   => $this->parseInt('conn_timeout', 3),
-                'adapter'           => $this->_httpAdapter,
             )
         );
         $cookies = $this->parseBool($index.'.cookies', TRUE);
