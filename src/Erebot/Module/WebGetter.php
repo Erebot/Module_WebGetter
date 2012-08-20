@@ -413,6 +413,7 @@ extends Erebot_Module_Base
         &$context
     )
     {
+        $isPre  = in_array($index.'.pre', $params);
         $domdoc = new DOMDocument();
         $domdoc->validateOnParse        = FALSE;
         $domdoc->preserveWhitespace     = FALSE;
@@ -425,8 +426,9 @@ extends Erebot_Module_Base
         libxml_clear_errors();
         libxml_use_internal_errors($uie);
 
-        // Apply XPath selections & add date to the context.
-        $xpath = new DOMXPath($domdoc);
+        // Apply XPath selections & add data to the context.
+        $xpath          = new DOMXPath($domdoc);
+        $docEncoding    = $domdoc->encoding ? $domdoc->encoding : 'UTF-8';
         for ($i = 1; in_array($index.'.vars.'.$i, $params); $i++) {
             $res = $xpath->query(
                 self::_injectContext(
@@ -437,13 +439,26 @@ extends Erebot_Module_Base
 
             if (is_object($res)) {
                 if ($res instanceof DOMNode) {
-                    $res = array($res->textContent);
+                    $res = htmlspecialchars(
+                        $res->textContent,
+                        ENT_QUOTES,
+                        $docEncoding
+                    );
+                    if (!$isPre)
+                        $res = trim($res);
+                    $res = array($res);
                 }
                 else if ($res instanceof DOMNodeList) {
                     $nodesRes = array();
                     $nbNodes = $res->length;
                     for ($j = 0; $j < $nbNodes; $j++) {
-                        $textContent = trim($res->item($j)->textContent);
+                        $textContent = htmlspecialchars(
+                            $res->item($j)->textContent,
+                            ENT_QUOTES,
+                            $docEncoding
+                        );
+                        if (!$isPre)
+                            $textContent = trim($textContent);
                         if ($textContent != "")
                             $nodesRes[] = $textContent;
                     }
@@ -455,7 +470,11 @@ extends Erebot_Module_Base
             else $res = array("");
 
             // If an encoding was supplied, use it.
-            if ($encoding !== NULL) {
+            if ($encoding === NULL) {
+                $encoding = $docEncoding;
+            }
+
+            if (count($res)) {
                 try {
                     $res = array_map(
                         'Erebot_Utils::toUTF8',
@@ -529,6 +548,14 @@ extends Erebot_Module_Base
         $this->_addGetParams($index, $params, $context, $url);
         $this->_addPostParams($index, $params, $context, $request);
 
+        if (in_array($index.'.user-agent', $params)) {
+            $userAgent = $this->parseString($index.'.user-agent');
+            if ($userAgent == "")
+                $request->setHeader('User-Agent', NULL);
+            else
+                $request->setHeader('User-Agent', $userAgent);
+        }
+
         // Parse the result.
         $mimes      = array(
             'application/xml',
@@ -572,6 +599,15 @@ extends Erebot_Module_Base
             $params, $context
         );
 
+        if (in_array($index.'.pre', $params)) {
+            foreach ($context as $name => &$value) {
+                if (substr($name, 0, 5) == 'vars.' && !is_array($value)) {
+                    $value = preg_split('/\\r\\n?|\\n/', $value);
+                }
+            }
+            unset($value);
+        }
+
         $multiples = array();
         foreach ($context as $name => $value) {
             if (substr($name, 0, 5) == 'vars.' && is_array($value)) {
@@ -598,7 +634,7 @@ extends Erebot_Module_Base
                     $fmt->_("Oops, nothing to send!")
                 );
             }
-            return $this->sendMessage($target, $output);
+            return $this->sendMessage($target, $fmt->render($output));
         }
 
         // Duplicate unique values to match length of other arrays.
@@ -622,7 +658,7 @@ extends Erebot_Module_Base
             );
             if ($output == "")
                 continue;
-            $this->sendMessage($target, $output);
+            $this->sendMessage($target, $fmt->render($output));
             $linesSent++;
         }
 
