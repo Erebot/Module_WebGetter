@@ -16,6 +16,11 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * Stores cookies and passes them between HTTP requests
+ * This class is only used to workaround a limitation of HTTP_Request2
+ * when running from a PHAR archive.
+ */
 class   Erebot_Module_WebGetter_CookieJar
 extends HTTP_Request2_CookieJar
 {
@@ -31,7 +36,8 @@ extends HTTP_Request2_CookieJar
     public function __construct(
         $serializeSessionCookies    = FALSE,
         $usePublicSuffixList        = TRUE
-    ) {
+    )
+    {
         parent::__construct($serializeSessionCookies, $usePublicSuffixList);
         if (!$usePublicSuffixList || strncasecmp(__FILE__, 'phar://', 7))
             return;
