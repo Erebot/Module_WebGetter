@@ -43,7 +43,7 @@ extends HTTP_Request2_CookieJar
             DIRECTORY_SEPARATOR . "pear.php.net" .
             DIRECTORY_SEPARATOR . "HTTP_Request2" .
             DIRECTORY_SEPARATOR . "public-suffix-list.php"
-        )
+        );
     }
 }
 
