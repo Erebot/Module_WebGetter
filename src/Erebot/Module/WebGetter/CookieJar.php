@@ -16,6 +16,12 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+require_once(
+    'HTTP' .
+    DIRECTORY_SEPARATOR . 'Request2' .
+    DIRECTORY_SEPARATOR . 'CookieJar.php'
+);
+
 /**
  * Stores cookies and passes them between HTTP requests
  * This class is only used to workaround a limitation of HTTP_Request2

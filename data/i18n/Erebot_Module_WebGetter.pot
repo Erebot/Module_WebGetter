@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Erebot_Module_WebGetter 0.1.0\n"
 "Report-Msgid-Bugs-To: i18n@erebot.net\n"
-"POT-Creation-Date: 2012-09-14 19:45+0200\n"
+"POT-Creation-Date: 2012-09-14 20:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgid ""
 "defined groups of channels."
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 577
+# File: src/Erebot/Module/WebGetter.php, line: 578
 msgid ""
 "An error occurred while retrieving the information (<var name=\"error\"/>)"
 msgstr ""
@@ -42,16 +42,16 @@ msgid ""
 "item='dummy'><b><var name='group'/></b></for>."
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 588
+# File: src/Erebot/Module/WebGetter.php, line: 589
 msgid "Invalid response received"
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 618
+# File: src/Erebot/Module/WebGetter.php, line: 619
 msgid "Multiple arrays with varying lengths found"
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 634
-# File: src/Erebot/Module/WebGetter.php, line: 666
+# File: src/Erebot/Module/WebGetter.php, line: 635
+# File: src/Erebot/Module/WebGetter.php, line: 667
 msgid "Oops, nothing to send!"
 msgstr ""
 #
@@ -61,6 +61,6 @@ msgid ""
 "information about TV schedules off the internet."
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 568
+# File: src/Erebot/Module/WebGetter.php, line: 569
 msgid "Retrieving \"<var name=\"url\"/>\""
 msgstr ""
