@@ -302,8 +302,9 @@ extends Erebot_Module_Base
             )
         );
         $cookies = $this->parseBool($index.'.cookies', TRUE);
-        if ($cookies)
-            $request->setCookieJar(TRUE);
+        if ($cookies) {
+            $request->setCookieJar(new Erebot_Module_WebGetter_CookieJar());
+        }
         return $request;
     }
 
