@@ -57,6 +57,7 @@ $metadata['extra']['phar']['path'] =
     DIRECTORY_SEPARATOR . "php";
 // Erebot_Module_WebGetter's main .phar embeds the code of its dependencies.
 $metadata['provide']['pear-pear.php.net/http_request2'] = '*';
+$metadata['provide']['pear-pear.php.net/net_url2'] = '*';
 return $metadata;
 
 __HALT_COMPILER();

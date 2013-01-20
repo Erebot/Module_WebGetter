@@ -28,7 +28,8 @@
         "php": ">=5.2.2",
         "erebot/erebot-api": "*",
         "erebot/erebot-module-triggerregistry": "*",
-        "pear-pear.php.net/http_request2": "*"
+        "pear-pear.php.net/http_request2": "*",
+        "pear-pear.php.net/net_url2": "*"
     },
     "autoload": {
         "psr-0": {
