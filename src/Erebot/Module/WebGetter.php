@@ -529,8 +529,7 @@ extends Erebot_Module_Base
         else
             $target = $chan = $event->getChan();
 
-        $logging        = Plop::getInstance();
-        $logger         = $logging->getLogger(__FILE__);
+        $logger         = Plop::getInstance();
         $config         = $this->_connection->getConfig($this->_channel);
         $moduleConfig   = $config->getModule(get_class($this));
         $params         = $moduleConfig->getParamsNames();
