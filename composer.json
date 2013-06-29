@@ -1,5 +1,5 @@
 {
-    "name": "erebot/erebot-module-webgetter",
+    "name": "erebot/webgetter-module",
     "description": "Erebot module to retrieve XML/HTML content from a webpage",
     "keywords": ["Erebot", "IRC", "bot", "module"],
     "homepage": "https://github.com/Erebot/Erebot_Module_WebGetter",
@@ -20,16 +20,23 @@
     },
     "repositories": [
         {
-            "type": "pear",
-            "url": "http://pear.php.net"
+            "type": "composer",
+            "url": "http://packages.erebot.net"
         }
     ],
     "require": {
         "php": ">=5.2.2",
-        "erebot/erebot-api": "*",
-        "erebot/erebot-module-triggerregistry": "*",
-        "pear-pear.php.net/http_request2": "*",
-        "pear-pear.php.net/net_url2": "*"
+        "pear/http_request2": "dev-master",
+        "pear/net_url2": "dev-master",
+        "pear/pear_exception": "dev-master",
+        "erebot/triggerregistry-module": "dev-master",
+        "erebot/api": "dev-master",
+        "erebot/installers": "dev-master",
+        "erebot/generic-doc": "dev-master"
+    },
+    "require-dev": {
+        "erebot/buildenv": "dev-master",
+        "erebot/testenv": "dev-master"
     },
     "autoload": {
         "psr-0": {
