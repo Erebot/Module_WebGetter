@@ -4,7 +4,10 @@
     <property name="tagfiles" value="Erebot"/>
 
     <fileset dir="." id="phar.files">
-        <exclude name="**"/>
+        <include name="data/**"/>
+        <include name="vendor/pear/http_request2/**"/>
+        <include name="vendor/pear/net_url2/**"/>
+        <include name="vendor/pear/pear_exception/**"/>
     </fileset>
 
     <fileset dir="src/" id="sources">
