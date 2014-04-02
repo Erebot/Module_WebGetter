@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Erebot_Module_WebGetter dev-master\n"
+"Project-Id-Version: Erebot_Module_WebGetter 1.0.x-dev\n"
 "Report-Msgid-Bugs-To: i18n@erebot.net\n"
-"POT-Creation-Date: 2013-12-31 15:32+0100\n"
+"POT-Creation-Date: 2014-04-02 20:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 #
-# File: src/Erebot/Module/WebGetter.php, line: 159
+# File: src/WebGetter.php, line: 153
 msgid ""
 "<b>Usage:</b> !<var name='trigger'/> [<u>time</u>] [<u>channels</u>]. Returns "
 "TV schedules for the given channels at the given time. [<u>time</u>] can be "
@@ -25,42 +25,37 @@ msgid ""
 "defined groups of channels."
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 577
-msgid ""
-"An error occurred while retrieving the information (<var name=\"error\"/>)"
-msgstr ""
-#
-# File: src/Erebot/Module/WebGetter.php, line: 82
+# File: src/WebGetter.php, line: 81
 msgid ""
 "Could not register trigger #<var name=\"index\"/> (<var name=\"trigger\"/>)"
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 170
+# File: src/WebGetter.php, line: 164
 msgid ""
 "If none is given, the default group (<b><var name='default'/></b>) is used. "
 "The following groups are available: <for from='groups' key='group' "
 "item='dummy'><b><var name='group'/></b></for>."
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 588
+# File: src/WebGetter.php, line: 547
 msgid "Invalid response received"
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 618
+# File: src/WebGetter.php, line: 576
 msgid "Multiple arrays with varying lengths found"
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 634
-# File: src/Erebot/Module/WebGetter.php, line: 666
+# File: src/WebGetter.php, line: 592
+# File: src/WebGetter.php, line: 626
 msgid "Oops, nothing to send!"
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 146
+# File: src/WebGetter.php, line: 139
 msgid ""
 "Provides the <b><var name=\"trigger\"/></b> command which retrieves "
 "information about TV schedules off the internet."
 msgstr ""
 #
-# File: src/Erebot/Module/WebGetter.php, line: 568
+# File: src/WebGetter.php, line: 538
 msgid "Retrieving \"<var name=\"url\"/>\""
 msgstr ""
