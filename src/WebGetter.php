@@ -266,7 +266,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
     }
 
     /**
-     * Adds GET parameters to an URL.
+     * Returns the GET parameters for the request.
      *
      * \param int $index
      *      Index of the trigger.
@@ -278,11 +278,8 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
      * \param array $context
      *      Context for this HTTP request.
      *
-     * \return
-     *      This method does not return anything.
-     *
-     * \post
-     *      The URL is updated with the GET parameters.
+     * \retval string
+     *      The request's parameters, in query string format.
      */
     protected function getParams($index, $params, $context)
     {
@@ -300,7 +297,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
     }
 
     /**
-     * Adds POST parameters to an HTTP request.
+     * Returns POST data for the HTTP request.
      *
      * \param int $index
      *      Index of the trigger.
@@ -312,14 +309,8 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
      * \param array $context
      *      Context for this HTTP request.
      *
-     * \param HTTP_Request2 $request
-     *      HTTP request the parameters will be added to.
-     *
-     * \return
-     *      This method does not return anything.
-     *
-     * \post
-     *      The HTTP request is updated with the POST parameters.
+     * \retval string
+     *      POST data.
      */
     protected function getPostData($index, $params, $context)
     {
@@ -495,7 +486,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
 
         $text       = $event->getText();
         $index      = $this->indexes[strtolower($text[0])];
-        $method     = in_array($index.'.post.1.name', $params) ? Requests::POST : Requests::GET;
+        $method     = in_array($index.'.post.1.name', $params) ? \Requests::POST : \Requests::GET;
 
         $context    = $this->prepareContext($botFmt, $text);
         $url        = new \Erebot\URI(self::injectContext($this->parseString($index.'.url'), $context));
