@@ -247,7 +247,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
     {
         // Prepare context.
         $locale = $botFmt->getTranslator()->getLocale(\Erebot\IntlInterface::LC_MESSAGES);
-        $parsedLocale = Locale::parseLocale($locale);
+        $parsedLocale = \Locale::parseLocale($locale);
         $context = array(
             'language'  => $parsedLocale['language'],
             'region'    => $parsedLocale['region'],
