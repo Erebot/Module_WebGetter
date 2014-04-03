@@ -509,7 +509,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
             }
         }
 
-        $request = \Requests::request(
+        $response = \Requests::request(
             (string) $url,
             array(),
             $postData,
