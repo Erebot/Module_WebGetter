@@ -200,7 +200,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
      *      (eg. width specification for float formats) are not supported.
      *
      * \note
-     *      Copy/pasted from PLOP :)
+     *      Copy/pasted from Plop :)
      */
     protected static function injectContext($msg, $args)
     {
@@ -477,7 +477,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
             $target = $chan = $event->getChan();
         }
 
-        $logger     = \Plop::getInstance();
+        $logger     = \Plop\Plop::getInstance();
         $config     = $this->connection->getConfig($this->channel);
         $modConfig  = $config->getModule(get_class($this));
         $params     = $modConfig->getParamsNames();
