@@ -497,8 +497,11 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
             'verifyname'    => false,
             'timeout'       => $this->parseInt('timeout', 8),
         );
-        $query      = $url->getQuery();
-        $url->setQuery(rtrim($getParams . '&' . $query, '&'));
+
+        if ($getParams !== '') {
+            $query      = $url->getQuery();
+            $url->setQuery($getParams . '&' . $query, '&');
+        }
 
         if (in_array($index.'.user-agent', $params)) {
             $userAgent = $this->parseString($index.'.user-agent');
