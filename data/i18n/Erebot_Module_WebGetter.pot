@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Erebot_Module_WebGetter 1.0.x-dev\n"
 "Report-Msgid-Bugs-To: i18n@erebot.net\n"
-"POT-Creation-Date: 2014-04-02 20:40+0200\n"
+"POT-Creation-Date: 2016-12-17 22:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,16 +37,16 @@ msgid ""
 "item='dummy'><b><var name='group'/></b></for>."
 msgstr ""
 #
-# File: src/WebGetter.php, line: 547
+# File: src/WebGetter.php, line: 541
 msgid "Invalid response received"
 msgstr ""
 #
-# File: src/WebGetter.php, line: 576
+# File: src/WebGetter.php, line: 570
 msgid "Multiple arrays with varying lengths found"
 msgstr ""
 #
-# File: src/WebGetter.php, line: 592
-# File: src/WebGetter.php, line: 626
+# File: src/WebGetter.php, line: 586
+# File: src/WebGetter.php, line: 620
 msgid "Oops, nothing to send!"
 msgstr ""
 #
@@ -56,6 +56,6 @@ msgid ""
 "information about TV schedules off the internet."
 msgstr ""
 #
-# File: src/WebGetter.php, line: 538
+# File: src/WebGetter.php, line: 532
 msgid "Retrieving \"<var name=\"url\"/>\""
 msgstr ""
