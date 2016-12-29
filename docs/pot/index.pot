@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2011-2016, Erebot
+# This file is distributed under the same license as the Erebot_Module_WebGetter package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Erebot_Module_WebGetter 1.0.x-dev\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-30 00:20+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/index.rst:10
+msgid "Welcome to the documentation for Erebot_Module_WebGetter!"
+msgstr ""
+
+#: ../src/index.rst:12
+msgid "Erebot_Module_WebGetter is a module for `Erebot`_ that fetches resources from Internet using an HTTP GET or POST method. The content is then parsed to extract some pieces of information using `XPath expressions`_ [#]_."
+msgstr ""
+
+#: ../src/index.rst:17
+msgid "Contents:"
+msgstr ""
+
+#: ../src/index.rst:25
+msgid "Current status on http://travis-ci.org/: |travis|"
+msgstr ""
+
+#: ../src/index.rst:31
+msgid ":abbr:`XPath (XML Path Language)` is a :abbr:`W3C (World Wide Web Consortium)` `recommendation`_ designed as a language for addressing parts of an :abbr:`XML (eXtensible Markup Language)` document."
+msgstr ""
+

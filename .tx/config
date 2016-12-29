@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[Erebot.Erebot_Module_WebGetter]
+[webgetter-module.erebot_module_webgetter]
 source_file = data/i18n/Erebot_Module_WebGetter.pot
 source_lang = en_US
 type = PO
