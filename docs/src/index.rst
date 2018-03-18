@@ -11,7 +11,6 @@ Contents:
 ..  toctree::
     :maxdepth: 2
 
-    generic/Installation
 
 
 Current status on http://travis-ci.org/: |travis|
