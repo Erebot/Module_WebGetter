@@ -234,7 +234,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
     /**
      * Returns the context for a new HTTP request.
      *
-     * \param Erebot::IntlInterface $botFmt
+     * \param Erebot::Intl::TranslatorInterface $botFmt
      *      Main formatter used by the bot.
      *
      * \param Erebot::Interfaces::TextWrapper $text
@@ -246,7 +246,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
     protected function prepareContext($botFmt, $text)
     {
         // Prepare context.
-        $locale = $botFmt->getTranslator()->getLocale(\Erebot\IntlInterface::LC_MESSAGES);
+        $locale = $botFmt->getTranslator()->getLocale();
         $parsedLocale = \Locale::parseLocale($locale);
         $context = array(
             'language'  => $parsedLocale['language'],
