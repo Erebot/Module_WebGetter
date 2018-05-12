@@ -93,7 +93,7 @@ class WebGetter extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEn
             }
 
             $handler = new \Erebot\EventHandler(
-                \Erebot\CallableWrapper::wrap(array($this, 'handleRequest')),
+                array($this, 'handleRequest'),
                 new \Erebot\Event\Match\All(
                     new \Erebot\Event\Match\Type(
                         '\\Erebot\\Interfaces\\Event\\Base\\TextMessage'
